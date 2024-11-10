@@ -1,14 +1,18 @@
 const requireLogin = require("../middlewares/requireLogin");
-const RateCard = require("../models/RateCard");
+const mongoose = require("mongoose");
 
+const RateCard = mongoose.model("RateCard");
 module.exports = (app) => {
   // Create new rate card
   app.post("/rate_card", requireLogin, async (req, res) => {
     try {
       const rateCardData = req.body;
+      console.log(rateCardData);
       const rateCard = await new RateCard(rateCardData).save();
+      console.log(rateCard);
       res.send(rateCard);
     } catch (err) {
+      console.log(err);
       res.status(400).send(err);
     }
   });
