@@ -1,5 +1,5 @@
 const passport = require("passport");
-var GoogleStrategy = require("passport-google-oidc");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const mongoose = require("mongoose");
 const keys = require("../config/keys");
 
@@ -25,8 +25,8 @@ passport.use(
       clientSecret: keys.googleClientSecret,
       proxy: true,
     },
-    async (issuer, profile, done) => {
-      console.log("GOOGLE LOGIN PROFILE", profile, issuer);
+    async (accessToken, refreshToken, profile, done) => {
+      console.log("GOOGLE LOGIN PROFILE", profile);
       try {
         const existingUser = await User.findOne({ googleId: profile.id });
         console.log("EXISTING USER", existingUser);
@@ -36,6 +36,8 @@ passport.use(
         const user = await new User({
           googleId: profile.id,
           displayName: profile.displayName,
+          email: profile.emails[0]?.value,
+          photo: profile.photos[0]?.value,
         }).save();
 
         console.log("NEW USER", user);
