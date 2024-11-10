@@ -1,9 +1,11 @@
 const requireLogin = require("../middlewares/requireLogin");
+const RateCard = require("../models/RateCard");
 
 module.exports = (app) => {
-  app.post("rate_card", requireLogin, async (req, res) => {
+  // Create new rate card
+  app.post("/rate_card", requireLogin, async (req, res) => {
     try {
-      let rateCardData = req.body;
+      const rateCardData = req.body;
       const rateCard = await new RateCard(rateCardData).save();
       res.send(rateCard);
     } catch (err) {
@@ -11,24 +13,47 @@ module.exports = (app) => {
     }
   });
 
-  app.put("rate_card", requireLogin, async (req, res) => {
+  // Update existing rate card
+  app.put("/rate_card", requireLogin, async (req, res) => {
     try {
-      let rateCardData = req.body;
+      const rateCardData = req.body;
       const rateCard = await RateCard.findOneAndUpdate(
-        { id: rateCardData.id },
-        rateCardData
+        { _id: rateCardData._id }, // assuming `_id` is the unique identifier
+        rateCardData,
+        { new: true } // Return the updated document
       );
+      if (!rateCard) {
+        return res.status(404).send({ error: "Rate card not found" });
+      }
       res.send(rateCard);
     } catch (err) {
       res.status(400).send(err);
     }
   });
 
-  app.get("rate_card/:id", requireLogin, async (req, res) => {
+  // Retrieve rate card by ID
+  app.get("/rate_card/:id", requireLogin, async (req, res) => {
     try {
-      let rateCardId = req.params.id;
-      const rateCard = await RateCard.findOne({ id: rateCardId });
+      const rateCardId = req.params.id;
+      const rateCard = await RateCard.findOne({ _id: rateCardId });
+      if (!rateCard) {
+        return res.status(404).send({ error: "Rate card not found" });
+      }
       res.send(rateCard);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  });
+
+  // Delete rate card by ID
+  app.delete("/rate_card/:id", requireLogin, async (req, res) => {
+    try {
+      const rateCardId = req.params.id;
+      const rateCard = await RateCard.findByIdAndDelete(rateCardId);
+      if (!rateCard) {
+        return res.status(404).send({ error: "Rate card not found" });
+      }
+      res.send({ message: "Rate card deleted successfully" });
     } catch (err) {
       res.status(400).send(err);
     }
