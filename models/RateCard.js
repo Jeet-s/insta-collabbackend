@@ -15,6 +15,11 @@ const rateCardSchema = new Schema({
     type: String,
     required: false,
   },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 mongoose.model("RateCard", rateCardSchema);
