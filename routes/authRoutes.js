@@ -34,7 +34,7 @@ module.exports = (app) => {
     res.send({ message: "loged out" });
   });
 
-  app.get("/api/current_user", requireLogin, (req, res) => {
+  app.get("/auth/current_user", requireLogin, (req, res) => {
     res.send(req.user);
   });
 };

@@ -10,6 +10,11 @@ require("./models/User");
 require("./models/RateCard");
 require("./services/passport");
 
+const testGroupRoutes = require("./routes/testGroupRoutes");
+const testRoutes = require("./routes/testRoutes");
+const scenarioRoutes = require("./routes/scenarioRoutes");
+const resultRoutes = require("./routes/resultRoutes");
+
 mongoose.Promise = global.Promise;
 mongoose.connect(keys.mongoURI);
 
@@ -36,9 +41,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 require("./routes/authRoutes")(app);
-require("./routes/promotionsRoutes")(app);
+// require("./routes/testGroupRoutes")(app);
+// require("./routes/testRoutes")(app);
+// require("./routes/scenarioRoutes")(app);
+// require("./routes/resultRoutes")(app);
+app.use("/test_group", testGroupRoutes);
+app.use("/test", testRoutes);
+app.use("/scenario", scenarioRoutes);
+app.use("/result", resultRoutes);
 
-const PORT = process.env.PORT || 4200;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Listening on port`, PORT);
 });
+
+//jagjeetsingh2019
+//XzSqR63HXFYU51N9
